@@ -4,6 +4,10 @@ const patient_mongodb_url = process.env.PATIENT_MONGODB_URL; // Retrieve MongoDB
 const mongoose = require("mongoose"); // Import the mongoose library for MongoDB interactions
 const { authSchema } = require("../models/patientSchema"); // Import the authSchema from a patientSchema file
 const encrypt = require("mongoose-encryption"); // Import the mongoose-encryption library for field encryption
+authSchema.plugin(encrypt, {
+  secret: process.env.PASSWORD_ENCRYPTION_SECRET_KEY,
+  encryptedFields: ["password"],
+}); //encrypt password field in database
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID; // Retrieve Twilio account SID from environment variables
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN; // Retrieve Twilio authentication token from environment variables
 const twilio_client = require("twilio")(twilioAccountSid, twilioAuthToken); // Create a Twilio client using credentials
