@@ -1,46 +1,52 @@
 require('dotenv').config();
-const patient_mongodb_url=process.env.PATIENT_MONGODB_URL;
-const mongoose=require('mongoose');
-const {authSchema}=require('../models/patientSchema');
+const mongoose = require('mongoose');
+const {authSchema}=require('../models/patientDetailsSchema');
 const encrypt=require("mongoose-encryption");
 authSchema.plugin(encrypt, { secret:process.env.PASSWORD_ENCRYPTION_SECRET_KEY, encryptedFields: ['password'] });   //encrypt password field in database
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+const unique_id_code=process.env.UNIQUE_ID_CODE;
 const twilio_client = require('twilio')(twilioAccountSid, twilioAuthToken);
 const speakeasy = require('speakeasy'); 
 
 const register=async(req,res)=>{
 
-    mongoose.connection.close();
-
-    const {username,password,mobile_no}=req.body;
+  try{
+     const {username,password,mobile_no,mail_id}=req.body;
+     const auth=mongoose.model('auth',authSchema);
     
-    console.log(patient_mongodb_url+username);
+    // Details Validation
+    
+    const findExistingUsername=await(auth.findOne({username:username}));
+    const findExistingEmail=await(auth.findOne({mail_id:mail_id}));
+    if(findExistingUsername!=null)
+    {
+        return res.status(400).json({message:"username already exists , please try with another username"}); 
+    }
 
-    // connecting to the patient database
-
-    await(
-         mongoose
-    .connect(patient_mongodb_url+username)
-    .then(() => {
-      console.log('patient db Connetion Successfull')
-    })
-    .catch((err) => {
-      console.log(err.message)
-    })
-    )
-
-    const auth=mongoose.model('auth',authSchema);
-
+    if(findExistingEmail!=null)
+    {
+        return res.status(400).json({message:"email already exists , please try with another email"}); 
+    }
+   //delete all the existing data of the user
+   auth.deleteMany();
+    const patient_unique_id=111111111111111; //  unique id for each patient
     const newAuth=new auth({
         username,
         password,
-        mobile_no
+        mobile_no,
+        mail_id,
+        patient_unique_id,
     });
     
 
     await newAuth.save();
     createOTP(mobile_no,res);
+   }
+   catch(err){
+    console.log(err);
+    res.status(500).json({message:err.message });
+   }
 }
 
 const createOTP=async(mobile_no,res)=>{
@@ -74,7 +80,7 @@ await twilio_client.messages
     .then(message => console.log("message sent"))
     .catch(err=>console.log(err));
 
-res.status(200).json({secret:secret.base32});
+res.status(200).json({secret:secret.base32,patient_unique_id:111111111111111});
 
 }
 catch(err){
