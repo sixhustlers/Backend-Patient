@@ -2,15 +2,30 @@ const express=require('express')
 const app=express();
 const routes=require('./routes/apiRoutes');
 require('dotenv').config();
+const patient_mongodb_url=process.env.PATIENT_MONGODB_URL;
+const mongoose=require('mongoose');
 const port=process.env.PORT || 5000;
-// const uri=process.env.MONGO_URL;
+
 
 // app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-app.use('/api/',routes);
+app.use('/api/patient/',routes);
 // app.use('/api/msg',messageRoutes);
 
-app.listen(port,async()=>{   
+app.listen(port,async()=>{ 
+
+    // connecting to the patient database
+    await(
+         mongoose
+    .connect(patient_mongodb_url) 
+    .then(() => {
+      console.log('patient db Connetion Successfull')
+    })
+    .catch((err) => {
+      console.log(err.message);
+    })
+    );
+
     console.log(`Server is running on port: ${port}`);
 });

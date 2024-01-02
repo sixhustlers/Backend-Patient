@@ -1,111 +1,119 @@
-// Import necessary libraries and modules
-require("dotenv").config(); // Load environment variables from a .env file
-const patient_mongodb_url = process.env.PATIENT_MONGODB_URL; // Retrieve MongoDB URL from environment variables
-const mongoose = require("mongoose"); // Import the mongoose library for MongoDB interactions
-const { authSchema } = require("../models/patientSchema"); // Import the authSchema from a patientSchema file
-const encrypt = require("mongoose-encryption"); // Import the mongoose-encryption library for field encryption
-authSchema.plugin(encrypt, {
-  secret: process.env.PASSWORD_ENCRYPTION_SECRET_KEY,
-  encryptedFields: ["password"],
-}); //encrypt password field in database
-const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID; // Retrieve Twilio account SID from environment variables
-const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN; // Retrieve Twilio authentication token from environment variables
-const twilio_client = require("twilio")(twilioAccountSid, twilioAuthToken); // Create a Twilio client using credentials
-const speakeasy = require("speakeasy"); // Import the speakeasy library for OTP generation and verification
+require('dotenv').config();
+const mongoose = require('mongoose');
+const {authSchema}=require('../models/patientDetailsSchema');
+const encrypt=require("mongoose-encryption");
+authSchema.plugin(encrypt, { secret:process.env.PASSWORD_ENCRYPTION_SECRET_KEY, encryptedFields: ['password'] });   //encrypt password field in database
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+const unique_id_code=process.env.UNIQUE_ID_CODE;
+const twilio_client = require('twilio')(twilioAccountSid, twilioAuthToken);
+const speakeasy = require('speakeasy'); 
 
-// Define a function named "register" with asynchronous behavior
-const register = async (req, res) => {
-  mongoose.connection.close(); // Close any existing MongoDB connection
+const register=async(req,res)=>{
 
-  // Destructure properties from the request body
-  const { username, password, mobile_no } = req.body;
+  try{
+     const {username,password,mobile_no,mail_id}=req.body;
+     const auth=mongoose.model('auth',authSchema);
+    
+    // Details Validation
+    
+    const findExistingUsername=await(auth.findOne({username:username}));
+    const findExistingEmail=await(auth.findOne({mail_id:mail_id}));
+    if(findExistingUsername!=null)
+    {
+        return res.status(400).json({message:"username already exists , please try with another username"}); 
+    }
 
-  console.log(patient_mongodb_url + username);
-
-  // Connect to the patient database using the provided MongoDB URL
-  await mongoose
-    .connect(patient_mongodb_url + username)
-    .then(() => {
-      console.log("patient db Connection Successful");
-    })
-    .catch((err) => {
-      console.log(err.message);
+    if(findExistingEmail!=null)
+    {
+        return res.status(400).json({message:"email already exists , please try with another email"}); 
+    }
+   //delete all the existing data of the user
+   auth.deleteMany();
+    const patient_unique_id=111111111111111; //  unique id for each patient
+    const newAuth=new auth({
+        username,
+        password,
+        mobile_no,
+        mail_id,
+        patient_unique_id,
     });
+    
 
-  // Create a mongoose model for the 'auth' collection using the authSchema
-  const auth = mongoose.model("auth", authSchema);
+    await newAuth.save();
+    createOTP(mobile_no,res);
+   }
+   catch(err){
+    console.log(err);
+    res.status(500).json({message:err.message });
+   }
+}
 
-  // Create a new document using the auth model with provided data
-  const newAuth = new auth({
-    username,
-    password,
-    mobile_no,
-  });
+const createOTP=async(mobile_no,res)=>{
 
-  // Save the new document to the 'auth' collection
-  await newAuth.save();
+try{
+  const secret = speakeasy.generateSecret({ length: 20 }); 
+  
+// Generate a TOTP code using the secret key 
+const otp = speakeasy.totp({ 
+  
+    // Use the Base32 encoding of the secret key 
+    secret: secret.base32, 
+  
+    // Tell Speakeasy to use the Base32  
+    // encoding format for the secret key 
+    encoding: 'base32'
+}); 
+  
+// Log the secret key and TOTP code 
+// to the console 
+console.log('Secret: ', secret.base32); 
+console.log('Created OTP: ', otp);
 
-  // Call the createOTP function with the mobile number and response object
-  createOTP(mobile_no, res);
-};
-
-// Define a function named "createOTP" with asynchronous behavior
-const createOTP = async (mobile_no, res) => {
-  try {
-    // Generate a secret key for OTP using speakeasy
-    const secret = speakeasy.generateSecret({ length: 20 });
-
-    // Generate a TOTP (Time-based One-Time Password) using the secret key
-    const otp = speakeasy.totp({
-      secret: secret.base32,
-      encoding: "base32",
-    });
-
-    // Log the secret key and OTP to the console
-    console.log("Secret: ", secret.base32);
-    console.log("Created OTP: ", otp);
-
-    // Send the OTP to the user's mobile number using Twilio
-    await twilio_client.messages
-      .create({
+                // sending otp to the user
+await twilio_client.messages
+    .create({
         body: `Your OTP is ${otp}`,
-        from: "+12706067562", // Twilio phone number
-        to: `+91${mobile_no}`, // User's mobile number
-      })
-      .then((message) => console.log("Message sent"))
-      .catch((err) => console.log(err));
+        from: '+12706067562',
+        to: `+91${mobile_no}`
+    })
+    .then(message => console.log("message sent"))
+    .catch(err=>console.log(err));
 
-    // Send the secret key in the response object
-    res.status(200).json({ secret: secret.base32 });
-  } catch (err) {
-    console.log(err);
-  }
-};
+res.status(200).json({secret:secret.base32,patient_unique_id:111111111111111});
 
-// Define a function named "verifyOTP" with asynchronous behavior
-const verifyOTP = async (req, res) => {
-  try {
-    // Verify the received OTP using speakeasy
-    const verified = speakeasy.totp.verify({
-      secret: req.body.secret,
-      encoding: "base32",
-      token: req.body.otp,
-      window: 6, // Allowing a time window of 6 intervals for OTP verification
-    });
+}
+catch(err){
+  console.log(err);
+}
 
-    // Log information and send response based on OTP verification result
-    console.log(req.body.secret + " " + req.body.otp);
-    console.log(verified);
+}
 
-    if (verified) res.status(200).json({ message: "OTP verified" });
-    else res.status(400).json({ message: "OTP not verified" });
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-// Export the defined functions for use in other modules
-module.exports = {
-  register,
-  verifyOTP,
+
+const verifyOTP=async(req,res)=>{
+
+try{
+  var verified = speakeasy.totp.verify({
+  secret:req.body.secret,
+  encoding: 'base32',
+  token: req.body.otp,
+  window: 6
+});
+console.log(req.body.secret+" "+req.body.otp);
+console.log(verified);
+if(verified)
+res.status(200).json({message:'OTP verified'})
+else
+res.status(400).json({message:'OTP not verified'});
+}
+
+catch(err){
+  console.log(err);
+}
+}
+
+module.exports={
+    register,
+    verifyOTP
 };
