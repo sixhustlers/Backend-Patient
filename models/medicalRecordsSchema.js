@@ -6,7 +6,7 @@ const transaction_idsSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    appointment_id:{
+    appointment_ids:{
         type:Array,
         default:[],
         date:{
@@ -18,7 +18,7 @@ const transaction_idsSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -43,7 +43,7 @@ const appointmentsSchema=mongoose.Schema({
         type:String,
     },
 
-    // patient_unique_id:{
+    // patient_id:{
     //     type:String,
     //     required:true,
     // },

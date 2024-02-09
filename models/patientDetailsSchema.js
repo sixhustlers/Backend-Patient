@@ -15,7 +15,7 @@ const authSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -51,7 +51,7 @@ const detailsSchema=mongoose.Schema({
     profilePicture:{
         type:String,
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -79,7 +79,7 @@ const locationSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -100,7 +100,7 @@ const schemesSchema=mongoose.Schema({
         required:true,
     },
 
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -125,7 +125,7 @@ const chatsSchema=mongoose.Schema({
         type:String,
         required:true,
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
@@ -141,7 +141,7 @@ const familyMembersSchema=mongoose.Schema({
             default:false,
         },
     },
-    patient_unique_id:{
+    patient_id:{
         type:String,
         required:true,
     },
