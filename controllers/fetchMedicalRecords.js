@@ -23,16 +23,16 @@ const fetchAppointments=async(req,res)=>{
     let appointment_details_arr1 = [];
 
     // Using for...of loop to handle asynchronous operations
-    for (const appointment_id of transaction.appointment_id) {
+    for (const appointment_id of transaction.appointment_ids) {
         let appointment_detail = await appointment.findOne({ appointment_id });
         appointment_details_arr1.push(appointment_detail);
     }
 
-    console.log(appointment_details_arr1);
+    // console.log(appointment_details_arr1);
     appointment_details_arr.push(appointment_details_arr1);
 }
 
-    console.log(appointment_details_arr)
+    // console.log(appointment_details_arr)
     res.status(200).send(appointment_details_arr);
     }
     catch(err){
@@ -40,9 +40,9 @@ const fetchAppointments=async(req,res)=>{
     }
 }
 
-const fetchAllOtherRecords=async(req,res)=>{
+const fetchAppointmentRecords=async(req,res)=>{
     try {
-    const appointment_id = req.body;
+    const appointment_id = req.body;  //no need of patient id as the appointment ids will be unique
 
     const prescriptions = mongoose.model('prescription', prescriptionsSchema);
     const medications = mongoose.model('medication', medicationsSchema);
@@ -70,4 +70,4 @@ const fetchAllOtherRecords=async(req,res)=>{
     res.status(500).json({ message: err.message });
 }
 }
-module.exports={fetchAppointments,fetchAllOtherRecords}
+module.exports={fetchAppointments,fetchAppointmentRecords}
