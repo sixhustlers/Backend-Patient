@@ -2,11 +2,7 @@ const mongoose =require('mongoose');
 
 const transaction_idsSchema=mongoose.Schema({
 
-    transaction_id:{
-        type:String,
-        required:true,
-    },
-    appointment_ids:{
+    appointment_ids_arr:{
         type:Array,
         default:[],
         date:{
@@ -18,48 +14,52 @@ const transaction_idsSchema=mongoose.Schema({
         type:String,
         required:true,
     },
+    disease_name:{
+        type:String,
+    }, 
     patient_id:{
         type:String,
         required:true,
     },
 })
-const appointmentsSchema=mongoose.Schema({
-    appointment_id:{
-        type:String,
-        required:true,
-    },
-    appointment_date:{
-        type:Date,
-        default:Date.now,
-    },
-    transaction_id:{
-        type:String,
-        required:true,
-    },
-    disease_id:{
-        type:String,
-    },
-    disease_name:{
-        type:String,
-    },
+const appointmentsSchema = mongoose.Schema({
+  appointment_date: {
+    type: Date,
+    default: Date.now,
+  },
+  transaction_id: {
+    type: String,
+    required: true,
+  },
+  patient_id: {
+    type: String,
+    required: true,
+  },
 
-    // patient_id:{
-    //     type:String,
-    //     required:true,
-    // },
-    doctor_id:{
-        type:String,
-    },
-    doctor_name:{
-        type:String,
-    },
-    hospital_id:{
-        type:String,
-    },
-    hospital_name:{
-        type:String,
-    },
-});
+  disease_id: {
+    type: String,
+  },
+  disease_name: {
+    type: String,
+  },
+
+  // patient_id:{
+  //     type:String,
+  //     required:true,
+  // },
+  doctor_id: {
+    type: String,
+  },
+  doctor_name: {
+    type: String,
+  },
+  hospital_id: {
+    type: String,
+  },
+  hospital_name: {
+    type: String,
+  },
+})
 
 const prescriptionsSchema=mongoose.Schema({
     disease_id:{
@@ -73,6 +73,10 @@ const prescriptionsSchema=mongoose.Schema({
         required:true,
     },
     transaction_id:{
+        type:String,
+        required:true,
+    },
+    patient_id:{
         type:String,
         required:true,
     },
@@ -142,164 +146,174 @@ const prescriptionsSchema=mongoose.Schema({
     },
 });
 
-const medicationsSchema=mongoose.Schema({
-    transaction_id:{
-        type:String,
-        required:true,
-    },
-    appointment_id:{
-        type:String,
-        required:true,
-    },
-    disease_id:{
-        type:String,
-        required:true,
-    },
-    disease_name:{
-        type:String,
-    },
-    medicine_id:{
-        type:Array,
-        default:[],
-    },
-    medicine_name:{
-        type:Array,
-        default:[],
-    },
-    medicine_dose:{
-        type:Array,
-        default:[],
-    },
+const medicationsSchema = mongoose.Schema({
+  transaction_id: {
+    type: String,
+    required: true,
+  },
+  appointment_id: {
+    type: String,
+    required: true,
+  },
+  disease_id: {
+    type: String,
+    required: true,
+  },
+  patient_id: {
+    type: String,
+    required: true,
+  },
+  disease_name: {
+    type: String,
+  },
 
-    medicine_purchase_id:{
-        type:String,
-    },
-    medicine_purchase_date:{
-        type:Date,
-    },
-    previous_medicines_file_details:{
-        type:Array,
-        default:[],
-    },
-    medical_shop_id:{
-        type:String,
-    },
-    medical_shop_name:{
-        type:String,
-    },
-    // medicine_dose:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_time:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_duration:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_start_date:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_end_date:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_frequency:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_type:{
-    //     type:Array,
-    //     required:true,
-    // },
-    // medicine_reminder:{
-    //     type:Array,
-    //     required:true,
-    // },
+  medicine_id: {
+    type: Array,
+    default: [],
+  },
+  medicine_name: {
+    type: Array,
+    default: [],
+  },
+  medicine_dose: {
+    type: Array,
+    default: [],
+  },
 
-    
-});
+  medicine_purchase_id: {
+    type: String,
+  },
+  medicine_purchase_date: {
+    type: Date,
+  },
+  previous_medicines_file_details: {
+    type: Array,
+    default: [],
+  },
+  medical_shop_id: {
+    type: String,
+  },
+  medical_shop_name: {
+    type: String,
+  },
+  // medicine_dose:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_time:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_duration:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_start_date:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_end_date:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_frequency:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_type:{
+  //     type:Array,
+  //     required:true,
+  // },
+  // medicine_reminder:{
+  //     type:Array,
+  //     required:true,
+  // },
+})
 
-const lab_reportsSchema=mongoose.Schema({
+const lab_reportsSchema = mongoose.Schema({
+  disease_id: {
+    type: String,
+    required: true,
+  },
+  disease_name: {
+    type: String,
+  },
+  transaction_id: {
+    type: String,
+    required: true,
+  },
+  appointment_id: {
+    type: String,
+    required: true,
+  },
+  patient_id: {
+    type: String,
+    required: true,
+  },
 
-    disease_id:{
-        type:String,
-        required:true,
-    },
-    disease_name:{
-        type:String,
-    },
-    transaction_id:{
-        type:String,
-        required:true,
-    },
-    appointment_id:{
-        type:String,
-        required:true,
-    },
-    lab_id:{
-        type:String,
-    },
-    lab_name:{
-        type:String,
-    },
+  lab_id: {
+    type: String,
+  },
+  lab_name: {
+    type: String,
+  },
 
-    lab_test_id:{
-        type:Array,
-        default:[],
-    },
-    lab_test_name:{
-        type:Array,
-        default:[],
-    },
-    lab_test_date:{
-        type:Date,
-        default:Date.now,
-    },
-    previous_lab_test_file_details:{
-        type:Array,
-        default:[],
-    },
+  lab_test_id: {
+    type: Array,
+    default: [],
+  },
+  lab_test_name: {
+    type: Array,
+    default: [],
+  },
+  lab_test_date: {
+    type: Date,
+    default: Date.now,
+  },
+  previous_lab_test_file_details: {
+    type: Array,
+    default: [],
+  },
+})
 
+const generalRecordsSchema = mongoose.Schema({
+  disease_id: {
+    type: String,
+    required: true,
+  },
+  disease_name: {
+    type: String,
+  },
+  transaction_id: {
+    type: String,
+    required: true,
+  },
+  appointment_id: {
+    type: String,
+    required: true,
+  },
+  patient_id: {
+    type: String,
+    required: true,
+  },
 
-});
-
-const generalRecordsSchema=mongoose.Schema({
-    disease_id:{
-        type:String,
-        required:true,
-    },
-    disease_name:{
-        type:String,
-    },
-    transaction_id:{
-        type:String,
-        required:true,
-    },
-    appointment_id:{
-        type:String,
-        required:true,
-    },
-    general_record_id:{
-        type:Array,
-        default:[],
-    },
-    general_record_name:{
-        type:Array,
-        default:[],
-    },
-    general_record_date:{
-        type:Array,
-        default:[],
-    },
-    previous_general_record_file_details:{
-        type:Array,
-        default:[],
-    },
-});
+  general_record_id: {
+    type: Array,
+    default: [],
+  },
+  general_record_name: {
+    type: Array,
+    default: [],
+  },
+  general_record_date: {
+    type: Array,
+    default: [],
+  },
+  previous_general_record_file_details: {
+    type: Array,
+    default: [],
+  },
+})
 
 module.exports={
     transaction_idsSchema,
