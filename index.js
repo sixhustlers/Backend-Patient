@@ -2,12 +2,13 @@ const express=require('express')
 const app=express();
 const routes=require('./routes/apiRoutes');
 require('dotenv').config();
+const cors = require('cors')
 const patient_mongodb_url=process.env.PATIENT_MONGODB_URL;
 const mongoose=require('mongoose');
 const port=process.env.PORT || 5000;
 
 
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use('/api/patient/',routes);

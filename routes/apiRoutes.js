@@ -3,6 +3,7 @@ const {register,verifyOTP}=require('../controllers/authentication');
 const {patientDetails}=require('../controllers/patientDetails');
 const {patientUploadMedicalRecords}=require('../controllers/uploadMedicalRecords');
 const {fetchAppointments,fetchAppointmentRecords}=require('../controllers/fetchMedicalRecords');
+
 router.route('/register').post(register);
 router.route('/verifyOTP').post(verifyOTP);
 
