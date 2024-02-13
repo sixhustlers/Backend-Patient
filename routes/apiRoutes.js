@@ -20,7 +20,7 @@ router.route('/uploadMedicalRecords').post(patientUploadMedicalRecords);
 router.route('/fetchAppointments').get(fetchAppointments);
 router.route('/fetchAllOtherRecords').get(fetchAppointmentRecords);
 
-router.route('/bookAppointment/symptoms').post(bookAppointmentFromSymptoms);
+router.route('/bookAppointment/symptoms/:patient_id').post(bookAppointmentFromSymptoms);
 
 router.route('/AppointmentBookingUpdate').post(AppointmentBookingUpdate);
 router.route('/confirmBooking').post(confirmBooking);

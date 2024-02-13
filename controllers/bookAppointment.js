@@ -6,7 +6,8 @@ const { axios } = require('axios');
 
 exports.bookAppointmentFromSymptoms=async(req,res)=>{
     try{
-        const {patient_id,location,symptoms}=req.body;
+        const {location,symptoms}=req.body;
+        const patient_id=req.params.patient_id;
         const patientDetails=mongoose.model('details',detailsSchema);
         
         await patientDetails.findOneAndUpdate({patient_id},{temporary_symptoms:symptoms});
@@ -17,8 +18,8 @@ exports.bookAppointmentFromSymptoms=async(req,res)=>{
         //     location
         // });
 
-        const doctors_ids=[111111,111112,111113,111114,111115];
-        fetchDoctorsCardDetails(doctors_ids); //to be implemented in doctorBackendRequests.js to fetch doctors card details        
+        const doctors_ids = ['111111', '111112', '111113', '111114', '111115']
+        fetchDoctorsCardDetails(doctors_ids,res); //to be implemented in doctorBackendRequests.js to fetch doctors card details        
 
     }
 

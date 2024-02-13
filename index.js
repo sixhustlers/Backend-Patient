@@ -12,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use('/api/patient/',routes);
-// app.use('/api/msg',messageRoutes);
 
 app.listen(port,async()=>{ 
 
