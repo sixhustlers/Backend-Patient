@@ -20,41 +20,50 @@ const authSchema=mongoose.Schema({
         required:true,
     },
     
+    // firstTimeAuth:{
+    //     type:Boolean,
+    //     required:true,
+    //     default:false,
+    // },
+
+    
 })
 
-const detailsSchema=mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-    },
-    dob:{
-        type:Date,
-        required:true,
-    },
-    sex:{
-        type:String,
-        required:true,
-    },
-    bloodGroup:{
-        type:String,
-    },
-    proffession:{
-        type:String,
-        
-    },
-    weight:{
-        type:Number,
-    },
-    height:{
-        type:Number,
-    },
-    profilePicture:{
-        type:String,
-    },
-    patient_id:{
-        type:String,
-        required:true,
-    },
+const detailsSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  dob: {
+    type: Date,
+    required: true,
+  },
+  sex: {
+    type: String,
+    required: true,
+  },
+  bloodGroup: {
+    type: String,
+  },
+  proffession: {
+    type: String,
+  },
+  weight: {
+    type: Number,
+  },
+  height: {
+    type: Number,
+  },
+  profilePicture: {
+    type: String,
+  },
+  patient_id: {
+    type: String,
+    required: true,
+  },
+  temporary_symptoms: {
+    type: String,
+  },
 })
 
 const locationSchema=mongoose.Schema({
