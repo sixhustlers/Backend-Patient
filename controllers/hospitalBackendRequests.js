@@ -26,7 +26,6 @@ exports.confirmBooking = async (req, res) => {
       doctor_id,
       time_slots,
       temporary_symptoms,
-      time_slots,
       hospital_id,
     })
 
@@ -39,21 +38,26 @@ exports.confirmBooking = async (req, res) => {
 // to be executed when the Doctor/Receptionist(Hospital) either confirms or rejects the booking
 
 exports.AppointmentBookingUpdate=async(req,res)=>{
-    const {bookingStatus,
-      appointment_id,
-      patient_id,
-      doctor_id,
-      hospital_id,
-    }=req.body;
+    const {bookingStatus,message}=req.body;
     const transaction=mongoose.model('transactions',transaction_idsSchema);
     const appointment=mongoose.model('appointments',appointmentsSchema);
     try{
 
         if(!bookingStatus){
-            
-            return res.status(200).json({message:"Booking Rejected",bookingStatus:false});
+            console.log(message);
+            return res.status(200).json({message:`${message}`,bookingStatus:`${bookingStatus}`});
         }
         else{
+            const{
+                appointment_id,
+                patient_id,
+                doctor_id,
+                hospital_id,
+                doctor_name,
+                hospital_name,
+                time_slots
+            }=req.body;
+
             const new_transaction=new transaction({
                 appointment_ids_arr:appointment_id,
                 patient_id
@@ -69,10 +73,9 @@ exports.AppointmentBookingUpdate=async(req,res)=>{
                 hospital_name,
             });
             await new_appointment.save();
-            res.status(200).json({message:"Booking Confirmed",isBookingConfirmed:true,time_slots});
+            res.status(200).json({message:`${message}`,bookingStatus:`${bookingStatus}`,time_slots});
         }
-
-    }
+      }
     catch(err){
         res.status(500).json({message:err.message});
     }
