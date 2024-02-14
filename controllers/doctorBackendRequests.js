@@ -40,12 +40,19 @@ exports.fetchDoctorsCardDetails = async (doctors_ids, res) => {
 exports.fetchDoctorDetails = async (req, res) => {
   try {
     const { doctor_id } = req.params
-    const doctor_details = await axios.post(
-      `${BACKEND_DOCTOR_HOST}/api/doctor/fetchDoctorDetails`,
+    const response = await axios.post(
+      `${BACKEND_DOCTOR_HOST}/fetchDoctorDetails`,
       { doctor_id }
-    )
-    res.status(200).json({ doctor_details })
+      )
+
+    if (response.status != 200) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    const doctor_details = response.data.doctor_details
+    const time_slots = response.data.time_slots
+  
+    res.status(200).json({ doctor_details, time_slots})
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    res.status(500).json({ message: err.message})
   }
 }

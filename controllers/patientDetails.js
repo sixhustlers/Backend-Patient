@@ -8,7 +8,8 @@ const patientDetails = async(req, res) => {
     // connecting to the patient database
     
     const details=mongoose.model('details',detailsSchema);
-    const newAuth=new details({
+    const temporary_symptoms="";
+    const patient_details=new details({
         name,
         dob,
         sex,
@@ -17,10 +18,11 @@ const patientDetails = async(req, res) => {
         weight,
         height,
         profilePicture,
-        patient_unique_id
+        patient_unique_id,
+        temporary_symptoms
     });
     
-    await newAuth.save();
+    await patient_details.save();
   }
   catch(err){
     console.log(err);

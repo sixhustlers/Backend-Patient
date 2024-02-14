@@ -1,22 +1,23 @@
 const axios=require('axios');
 const mongoose = require('mongoose');
 const {detailsSchema}=require('../models/patientDetailsSchema');
-const {transaction_idsSchema}=require('../models/medicalRecordsSchema');
+const {transaction_idsSchema,appointmentsSchema}=require('../models/medicalRecordsSchema');
 const BACKEND_HOSPITAL_HOST=process.env.BACKEND_HOSPITAL_HOST;
 
 // to be executed when the patient confirms the booking with the time-slots
 exports.confirmBooking = async (req, res) => {
   try {
-    const { patient_id, doctor_id, time_slots } = req.body
+    const {doctor_id, time_slots,hospital_id} = req.body
+    const patient_id = req.params;
     const patientDetails = mongoose.model('details', detailsSchema)
 
     const patient_details = await patientDetails.findOne({ patient_id })
     const { name, dob, sex, blood_group, weight, height, temporary_symptoms } =
       patient_details
-
-    await axios.post(`${BACKEND_HOSPITAL_HOST}/api/confirmBooking`, {
+    const age=new Date().getFullYear()-new Date(dob).getFullYear();
+    await axios.post(`${BACKEND_HOSPITAL_HOST}/bookingRequest`, {
       name,
-      dob,
+      age,
       sex,
       blood_group,
       weight,
@@ -25,9 +26,8 @@ exports.confirmBooking = async (req, res) => {
       doctor_id,
       time_slots,
       temporary_symptoms,
-      doctor_id,
-      patient_id,
       time_slots,
+      hospital_id,
     })
 
     res.status(200).json({ message: 'Wait for the Confirmation from Doctor' })
@@ -39,20 +39,36 @@ exports.confirmBooking = async (req, res) => {
 // to be executed when the Doctor/Receptionist(Hospital) either confirms or rejects the booking
 
 exports.AppointmentBookingUpdate=async(req,res)=>{
-    const {isBookingConfirmed,time_slots,appointment_id,patient_id}=req.body;
+    const {bookingStatus,
+      appointment_id,
+      patient_id,
+      doctor_id,
+      hospital_id,
+    }=req.body;
     const transaction=mongoose.model('transactions',transaction_idsSchema);
+    const appointment=mongoose.model('appointments',appointmentsSchema);
     try{
 
-        if(!isBookingConfirmed){
+        if(!bookingStatus){
             
-            return res.status(200).json({message:"Booking Rejected",isBookingConfirmed:false});
+            return res.status(200).json({message:"Booking Rejected",bookingStatus:false});
         }
         else{
             const new_transaction=new transaction({
                 appointment_ids_arr:appointment_id,
                 patient_id
             });
-            await new_transaction.save();
+            const new_transation=await new_transaction.save();
+            const new_appointment=new appointment({
+                appointment_id,
+                transaction_id:new_transation.transaction_id,
+                patient_id,
+                doctor_id,
+                hospital_id,
+                doctor_name,
+                hospital_name,
+            });
+            await new_appointment.save();
             res.status(200).json({message:"Booking Confirmed",isBookingConfirmed:true,time_slots});
         }
 
