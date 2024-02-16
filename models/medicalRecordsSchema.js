@@ -12,7 +12,6 @@ const transaction_idsSchema=mongoose.Schema({
     },
     disease_id:{
         type:String,
-        required:true,
     },
     disease_name:{
         type:String,

@@ -10,7 +10,7 @@ const {
   AppointmentBookingUpdate,
 } = require('../controllers/hospitalBackendRequests')
 
-
+  
 router.route('/register').post(register);
 router.route('/verifyOTP').post(verifyOTP);
 
@@ -22,10 +22,10 @@ router.route('/fetchAllOtherRecords').get(fetchAppointmentRecords);
 
 router.route('/bookAppointment/symptoms/:patient_id').post(bookAppointmentFromSymptoms);
 
-router.route('/AppointmentBookingUpdate').post(AppointmentBookingUpdate);
-router.route('/confirmBooking').post(confirmBooking);
+router.route('/appointmentBookingUpdate/:patient_id').post(AppointmentBookingUpdate);
+router.route('/confirmBooking/:patient_id').post(confirmBooking);
 
-router.route('/fetchDoctorDetails').get(fetchDoctorDetails);
+router.route('/fetchDoctorDetails/:doctor_id').get(fetchDoctorDetails);
 
 
 

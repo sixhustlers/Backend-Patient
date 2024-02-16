@@ -36,7 +36,6 @@ const detailsSchema = mongoose.Schema({
   },
   dob: {
     type: Date,
-    required: true,
   },
   sex: {
     type: String,
