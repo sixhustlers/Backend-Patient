@@ -22,7 +22,7 @@ router.route('/fetchAllOtherRecords').get(fetchAppointmentRecords);
 
 router.route('/bookAppointment/symptoms/:patient_id').post(bookAppointmentFromSymptoms);
 
-router.route('/appointmentBookingUpdate').post(AppointmentBookingUpdate);
+router.route('/appointmentBookingUpdate/:patient_id').post(AppointmentBookingUpdate);
 router.route('/confirmBooking/:patient_id').post(confirmBooking);
 
 router.route('/fetchDoctorDetails/:doctor_id').get(fetchDoctorDetails);
