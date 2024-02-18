@@ -63,6 +63,9 @@ const detailsSchema = mongoose.Schema({
   temporary_symptoms: {
     type: String,
   },
+  last_visited_doctor_type_id: {
+    type: String,
+  },
 })
 
 const locationSchema=mongoose.Schema({

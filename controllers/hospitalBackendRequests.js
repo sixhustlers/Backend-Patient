@@ -60,6 +60,7 @@ exports.AppointmentBookingUpdate = async (req, res) => {
         time_slots,
       } = req.body.details
       const patient_id = req.params.patient_id
+      console.log(req.params.patient_id, appointment_id, doctor_id, hospital_id, time_slots)
 
       const new_transaction = new transaction({
         appointment_ids_arr: appointment_id,
