@@ -3,7 +3,7 @@ const {register,verifyOTP}=require('../controllers/authentication');
 const {patientDetails}=require('../controllers/patientDetails');
 const {patientUploadMedicalRecords}=require('../controllers/uploadMedicalRecords');
 const {fetchAppointments,fetchAppointmentRecords}=require('../controllers/fetchMedicalRecords');
-const {bookAppointmentFromSymptoms} = require('../controllers/bookAppointment')
+const {bookAppointmentFromSymptoms,bookAppointmentFromDoctorList} = require('../controllers/bookAppointment')
 const {fetchDoctorDetails}=require('../controllers/doctorBackendRequests');
 const {
   confirmBooking,
@@ -21,6 +21,7 @@ router.route('/fetchAppointments').get(fetchAppointments);
 router.route('/fetchAllOtherRecords').get(fetchAppointmentRecords);
 
 router.route('/bookAppointment/symptoms/:patient_id').post(bookAppointmentFromSymptoms);
+router.route('/fetchRecommendedDoctors/:patient_id').post(bookAppointmentFromDoctorList);
 
 router.route('/appointmentBookingUpdate/:patient_id').post(AppointmentBookingUpdate);
 router.route('/confirmBooking/:patient_id').post(confirmBooking);
