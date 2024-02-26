@@ -26,7 +26,6 @@ const authSchema=mongoose.Schema({
     //     default:false,
     // },
 
-    
 })
 
 const detailsSchema = mongoose.Schema({

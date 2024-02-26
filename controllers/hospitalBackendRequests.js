@@ -5,7 +5,7 @@ const {
   transaction_idsSchema,
   appointmentsSchema,
 } = require('../models/medicalRecordsSchema')
-const { time } = require('speakeasy')
+
 const BACKEND_HOSPITAL_HOST = process.env.BACKEND_HOSPITAL_HOST
 
 // to be executed when the patient confirms the booking with the time-slots
