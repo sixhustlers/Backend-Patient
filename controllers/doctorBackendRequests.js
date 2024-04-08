@@ -55,26 +55,3 @@ exports.fetchDoctorDetails = async (req, res) => {
     res.status(500).json({ message: err.message})
   }
 }
-
-            //Flow-3
-
-exports.fetchRecommendedDoctorsList = async (visited_doctor_ids, res) => {
-  try {
-    const response = await axios.post(
-      `${BACKEND_DOCTOR_HOST}/fetchRecommendedDoctorsList`,
-      { visited_doctor_ids }
-    )
-
-    if (response.status != 200) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-
-    const recommended_doctors_list = response.data.recommended_doctors_list
-
-    console.log(recommended_doctors_list)
-    res.status(200).json({ recommended_doctors_list })
-  } catch (err) {
-    console.log(err)
-    res.status(500).json({ message: err.message })
-  }
-}
