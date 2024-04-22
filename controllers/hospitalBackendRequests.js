@@ -5,23 +5,30 @@ const {
   transaction_idsSchema,
   appointmentsSchema,
 } = require('../models/medicalRecordsSchema')
-const { time } = require('speakeasy')
+
+require('dotenv').config()
 const BACKEND_HOSPITAL_HOST = process.env.BACKEND_HOSPITAL_HOST
 
 // to be executed when the patient confirms the booking with the time-slots
 exports.confirmBooking = async (req, res) => {
   try {
-    const { doctor_id, time_slots, hospital_id, doctor_name } = req.body
+    const { doctor_id_name_department, time_slots, hospital_id_name, symptoms } =
+      req.body
     const patient_id = req.params.patient_id
-    const patientDetails = mongoose.model('details', detailsSchema)
 
+    const patientDetails = mongoose.model('details', detailsSchema)
     const patient_details = await patientDetails.findOne({ patient_id })
-    console.log(patient_details)
-    const { name, dob, sex, blood_group, weight, height, temporary_symptoms } =
+    var { name, dob, sex, blood_group, weight, height, temporary_symptoms_disease_id_name } =
       patient_details
     const age = new Date().getFullYear() - new Date(dob).getFullYear()
+
+    var temporary_symptoms = temporary_symptoms_disease_id_name[0]
+    // when the patient already knows the doctor to whom appointment is to be booked and then fills the symptom form just before booking (in Flow=2)
+    if (symptoms.length != 0) temporary_symptoms_disease_id_name[0] = symptoms
+    console.log(temporary_symptoms_disease_id_name)
+
     const response = await axios.post(
-      `${BACKEND_HOSPITAL_HOST}/bookingRequest`,
+      `${process.env.BACKEND_HOSPITAL_HOST}/bookingRequest`,
       {
         name,
         age,
@@ -30,11 +37,10 @@ exports.confirmBooking = async (req, res) => {
         weight,
         height,
         patient_id,
-        doctor_id,
-        doctor_name,
+        doctor_id_name_department,
         time_slots,
-        temporary_symptoms,
-        hospital_id,
+        temporary_symptoms_disease_id_name,
+        hospital_id_name,
       }
     )
     res.status(200).json({ message: response.data.message })
@@ -60,7 +66,13 @@ exports.AppointmentBookingUpdate = async (req, res) => {
         time_slots,
       } = req.body.details
       const patient_id = req.params.patient_id
-      console.log(req.params.patient_id, appointment_id, doctor_id, hospital_id, time_slots)
+      console.log(
+        req.params.patient_id,
+        appointment_id,
+        doctor_id,
+        hospital_id,
+        time_slots
+      )
 
       const new_transaction = new transaction({
         appointment_ids_arr: appointment_id,
@@ -106,8 +118,49 @@ exports.AppointmentBookingUpdate = async (req, res) => {
       console.log(response.message)
     }
 
-    res.status(200).json({ message: 'Booking Updated' })
+    res.status(200).json({ message: 'Booking Updated on patient' })
   } catch (err) {
     res.status(500).json({ message: err.message, hii: 'hii' })
+  }
+}
+
+// to be implemented to fetch the card details of the hospital
+exports.fetchHospitalsCardDetails = async (hospital_ids, res) => {
+  try {
+    // console.log(hospital_ids)
+    const response = await axios.post(
+      `${BACKEND_HOSPITAL_HOST}/fetchHospitalsCardDetails`,
+      { hospital_ids }
+    )
+    if (response.status != 200) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    const hospitals_card_details = response.data.hospitals_card_details
+    console.log(hospitals_card_details)
+    res.status(200).json({ hospitals_card_details })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({ message: error.message })
+  }
+}
+
+exports.fetchHospitalDetails = async (req, res) => {
+  try {
+    const hospital_id = req.params.hospital_id
+
+    const response = await axios.post(
+      `${BACKEND_HOSPITAL_HOST}/fetchHospitalDetails/${hospital_id}`
+    )
+    // console.log(response)
+    if (response.status != 200) {
+      throw new Error(`HTTP error status:${response.status}`)
+    }
+
+    const hospital_details = response.data.response
+    // console.log(hospital_details)
+    res.status(200).json({ hospital_details })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).json({ message: err.message })
   }
 }

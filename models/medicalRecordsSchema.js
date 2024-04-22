@@ -1,7 +1,6 @@
 const mongoose =require('mongoose');
 
 const transaction_idsSchema=mongoose.Schema({
-
     appointment_ids_arr:{
         type:Array,
         default:[],

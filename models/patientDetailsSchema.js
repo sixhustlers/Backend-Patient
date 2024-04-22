@@ -26,7 +26,6 @@ const authSchema=mongoose.Schema({
     //     default:false,
     // },
 
-    
 })
 
 const detailsSchema = mongoose.Schema({
@@ -60,8 +59,8 @@ const detailsSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  temporary_symptoms: {
-    type: String,
+  temporary_symptoms_disease_id_name: { // store the disease name and id according to the symptom analysis
+    type: [String],
   },
   last_visited_doctor_type_id: {
     type: String,
