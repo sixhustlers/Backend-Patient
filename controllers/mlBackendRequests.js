@@ -15,8 +15,9 @@ exports.getDoctorIdsFromSymptoms = async (patient_info, text, constraints) => {
     }
 
     const doctors_ids = response.data.doctors_ids
+    const disease_id_name = response.data.disease_id_name
 
-    return doctors_ids
+    return {doctors_ids, disease_id_name}
   } catch (err) {
     throw new Error(err.message)
   }

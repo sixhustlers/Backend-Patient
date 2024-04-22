@@ -27,10 +27,7 @@ exports.bookAppointmentFromSymptoms = async (req, res) => {
 
     const patientDetails = mongoose.model('details', detailsSchema)
 
-    const patient = await patientDetails.findOneAndUpdate(
-      { patient_id },
-      { temporary_symptoms: symptoms }
-    )
+    const patient = await patientDetails.findOne({ patient_id });
 
     const { dob, sex } = patient
     const age = new Date().getFullYear() - new Date(dob).getFullYear()
@@ -78,15 +75,28 @@ exports.bookAppointmentFromSymptoms = async (req, res) => {
       },
     ]
 
-    const doctors_ids = getDoctorIdsFromSymptoms(
+    const {doctors_ids,disease_id_name} = getDoctorIdsFromSymptoms(
       // req goes to ML backend
       patient_info,
       text,
       constraints
     )
+
+    const patient_details = mongoose.model('details', detailsSchema)
+    await patient_details.findOneAndUpdate(
+      { patient_id },
+      {
+        temporary_symptoms_disease_id_name: [
+          symptoms,
+          disease_id_name[0],
+          disease_id_name[1],
+        ],
+      }
+    )
     // const doctors_ids = ['111111', '111112', '111113', '111114', '111115']
 
     fetchDoctorsCardDetails(doctors_ids, res) //to be implemented in doctorBackendRequests.js to fetch doctors card details
+  
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -264,10 +274,10 @@ exports.bookAppointmentFromHospitalDirectly = async (req, res) => {
 
     const patientDetails = mongoose.model('details', detailsSchema)
     const patient_details = await patientDetails.findOne({ patient_id })
-    var { name, dob, sex, blood_group, weight, height, temporary_symptoms } =
+    var { name, dob, sex, blood_group, weight, height, temporary_symptoms_disease_id_name } =
       patient_details
     const age = new Date().getFullYear() - new Date(dob).getFullYear()
-
+    var temporary_symptoms = temporary_symptoms_disease_id_name[0]
     // when the patient already knows the doctor to whom appointment is to be booked and then fills the symptom form just before booking (in Flow=2)
     temporary_symptoms = symptoms
     console.log(name)
