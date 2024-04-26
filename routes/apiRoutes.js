@@ -21,12 +21,14 @@ const {
   AppointmentBookingUpdate,
   fetchHospitalDetails,
 } = require('../controllers/hospitalBackendRequests')
-
+const {Home}=require('../controllers/homepage');
 
 router.route('/register').post(register)
 router.route('/verifyOTP').post(verifyOTP)
 
 router.route('/patientDetails').post(patientDetails)
+
+router.route('/home/:patient_id').get(Home)
 
 router.route('/uploadMedicalRecords').post(patientUploadMedicalRecords)
 router.route('/fetchAppointments/:patient_id').get(fetchAppointments)
