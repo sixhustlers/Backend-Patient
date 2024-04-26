@@ -29,6 +29,10 @@ const authSchema=mongoose.Schema({
 })
 
 const detailsSchema = mongoose.Schema({
+  patient_id: {
+     type: String,
+     required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -55,16 +59,36 @@ const detailsSchema = mongoose.Schema({
   profilePicture: {
     type: String,
   },
-  patient_id: {
-    type: String,
-    required: true,
-  },
   temporary_symptoms_disease_id_name: { // store the disease name and id according to the symptom analysis
     type: [String],
   },
   last_visited_doctor_type_id: {
     type: String,
   },
+
+  //home screen booleans
+  isRegisterFormCompleted:{
+    type:Boolean,
+    default:false,
+  },
+  notifications:{
+    qrNotification:{
+      type:[[String]],
+    },
+    otherNotification:{
+      type:[[String]],
+    },
+  },
+   // will store the curent appointment_id(event_id) details
+   currentActivity: {
+    doctor_details: [{
+      doctor_id: String,
+      doctor_name: String,
+    }],
+    appointment_time: {
+        type: Date,
+    },
+  }
 })
 
 const locationSchema=mongoose.Schema({
