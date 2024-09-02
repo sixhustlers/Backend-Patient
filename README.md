@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Unified Health System (UHS) is a comprehensive healthcare solution designed to enhance and build upon the existing Unified Health Interface (UHI). UHS integrates cutting-edge AI technologies to assist patients, healthcare providers, and government agencies in optimizing healthcare services, improving patient outcomes, and ensuring data privacy.
+The Unified Health System (UHS) is a comprehensive healthcare solution designed inspired from UPI. UHS integrates all the healthcare servies into one and adds AI technologies to assist patients, healthcare providers, and government agencies in optimizing healthcare services, improving patient outcomes, and ensuring data privacy.
+
+![UHS Logo](https://drive.google.com/thumbnail?id=1N4Fg_IaIw08GQJ2I_z_tzR0sfR2U429P)
+![UHS USECASE](https://drive.google.com/thumbnail?id=1BphYlqEKUoF1sLQadU-14OsJj0oycodE)
 
 ## Key Features
 
