@@ -6,11 +6,11 @@ The Unified Health System (UHS) is a comprehensive healthcare solution designed 
 
 ## UHS Flow Diagram
 
-<img src="https://drive.google.com/thumbnail?id=1QKeHi21jIdQkuBhLXRDbxn_ugpr2YIEc" alt="UHS Logo" width="600" height="400">
+<img src="sih flow diagram.png" alt="UHS Logo" width="600" height="400">
 
 ## UHS Use Case Diagram
 
-<img src="https://drive.google.com/thumbnail?id=1BphYlqEKUoF1sLQadU-14OsJj0oycodE" alt="UHS UseCase Diagrams" width="500" height="400">
+<img src="Screenshot 2024-09-02 082049.png" alt="UHS UseCase Diagrams" width="500" height="400">
 
 ## Key Features
 
