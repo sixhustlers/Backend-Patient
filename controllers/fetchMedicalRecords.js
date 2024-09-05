@@ -15,28 +15,35 @@ const fetchAppointments = async (req, res) => {
     const transaction = mongoose.model('transaction', transaction_idsSchema)
     const appointment = mongoose.model('appointment', appointmentsSchema)
     const transactions = await transaction.find({ patient_id })
-    // console.log(transactions)
+  
     const appointment_details_arr = []
 
     // Taking the patient_unique_id and searching all the transaction of that id
     //and then sending the info of all the appointments contained in each transaction
-
+    
     for (const transaction of transactions) {
       let appointment_details_arr1 = []
       //   console.log(transaction.appointment_ids_arr)
       // Using for...of loop to handle asynchronous operations
+
       for (const appointment_id of transaction.appointment_ids_arr) {
         let appointment_detail = await appointment.findOne({
           _id: appointment_id,
         })
+        // fetching the disease name from the disease id
         appointment_details_arr1.push(appointment_detail)
       }
 
-      //   console.log(appointment_details_arr1)
-      appointment_details_arr.push(appointment_details_arr1)
+      // take disease name as noname if disease name is not present in DB
+      const disease = appointment_details_arr1[0]?.disease_name || 'No Name'
+      const appointment_obj = {
+        disease: disease,
+        appointment_details: appointment_details_arr1,
+      }
+      appointment_details_arr.push(appointment_obj)
+      
     }
 
-    // console.log(appointment_details_arr)
     res.status(200).send(appointment_details_arr)
   } catch (err) {
     res.status(500).json({ message: err.message })

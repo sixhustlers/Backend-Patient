@@ -30,18 +30,20 @@ const register=async(req,res)=>{
     }
    //delete all the existing data of the user
    auth.deleteMany();
-    const patient_unique_id=111111111111111; //  unique id for each patient
+//    const patient_unique_id = 111111111111111
+    const patient_id=username+"@UHS"; //  unique id for each patient
     const newAuth=new auth({
         username,
         password,
         mobile_no,
         mail_id,
-        patient_unique_id,
+        patient_id,
     });
     
 
     await newAuth.save();
-    createOTP(mobile_no,res);
+    // createOTP(mobile_no,res);
+    res.status(200).json({message:"Patient registered successfully",patient_id:patient_id});
    }
    catch(err){
     console.log(err);
@@ -80,7 +82,7 @@ await twilio_client.messages
     .then(message => console.log("message sent"))
     .catch(err=>console.log(err));
 
-res.status(200).json({secret:secret.base32,patient_unique_id:111111111111111});
+res.status(200).json({secret:secret.base32,patient_id:patient_id});
 
 }
 catch(err){
@@ -113,7 +115,32 @@ catch(err){
 }
 }
 
+//login function
+const login=async(req,res)=>{
+    try{
+        const {username,password}=req.body;
+        const auth=mongoose.model('auth',authSchema);
+        const user=await auth
+        .findOne({username:username})
+        // .select(username ,password ,patient_id);
+        if(user==null)
+        {
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+        if(user.password!=password)
+        {
+            return res.status(400).json({message:"Invalid credentials"});
+        }
+
+        res.status(200).json({message:"Login successful",patient_id:user.patient_id,username:user.username});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err.message});
+    }
+}
 module.exports={
     register,
+    login,
     verifyOTP
 };

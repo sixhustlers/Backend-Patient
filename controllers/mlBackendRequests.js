@@ -8,7 +8,9 @@ exports.getDoctorIdsFromSymptoms = async (patient_info, text, constraints) => {
       patient_info,
       text,
       constraints,
+      next_req:[1]
     })
+    console.log(response);
 
     if (response.status != 200) {
       throw new Error(`HTTP error! Status: ${response.status}`)
