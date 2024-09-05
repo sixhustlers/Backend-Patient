@@ -28,15 +28,18 @@ exports.bookAppointmentFromSymptoms = async (req, res) => {
     const patientDetails = mongoose.model('details', detailsSchema)
 
     const patient = await patientDetails.findOne({ patient_id });
-
+    
     const { dob, sex } = patient
     const age = new Date().getFullYear() - new Date(dob).getFullYear()
 
     // finding the info of the last appointment's like disease_id, doctor_type_id & appointment_date
+    const appointments = mongoose.model('appointments', appointmentsSchema)
     const last_appointment = await appointments
       .find()
       .sort({ _id: -1 })
       .limit(1)
+    
+    console.log(last_appointment)
 
     const last_visited_disease_id = last_appointment.disease_id
     const last_appointment_time_span =

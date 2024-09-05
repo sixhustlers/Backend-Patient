@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const { register, verifyOTP } = require('../controllers/authentication')
+const { register, verifyOTP,login } = require('../controllers/authentication')
 const { patientDetails } = require('../controllers/patientDetails')
 const {
   patientUploadMedicalRecords,
@@ -25,6 +25,7 @@ const {Home}=require('../controllers/homepage');
 
 router.route('/register').post(register)
 router.route('/verifyOTP').post(verifyOTP)
+router.route('/login').post(login)
 
 router.route('/patientDetails').post(patientDetails)
 
