@@ -23,7 +23,6 @@ const fetchAppointments = async (req, res) => {
     
     for (const transaction of transactions) {
       let appointment_details_arr1 = []
-      //   console.log(transaction.appointment_ids_arr)
       // Using for...of loop to handle asynchronous operations
 
       for (const appointment_id of transaction.appointment_ids_arr) {
